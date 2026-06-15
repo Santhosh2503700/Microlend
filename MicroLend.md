@@ -7,9 +7,9 @@ It manages the **complete loan lifecycle**:
 - Borrower registration  
 - KYC verification  
 - Loan application & approval  
-- Loan disbursement  
-- EMI collection  
-- Delinquency tracking  
+- Loan disbursement
+- EMI collection
+- Delinquency tracking
 - Reporting & notifications
 
 ---
