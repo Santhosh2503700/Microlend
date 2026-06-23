@@ -7,13 +7,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * RepaymentSchedule
- *
- * BUG FIX #4: Added amountPaid and paidDate fields.
- * These are required by the fixed CollectionService state machine to track
- * cumulative partial payments against each installment row.
- */
+
 @Entity
 @Table(name = "repayment_schedules")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder

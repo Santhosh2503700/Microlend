@@ -23,38 +23,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * DelinquencyScheduler — automated nightly delinquency detection.
- *
- * ═══════════════════════════════════════════════════════════════════════════
- * BUG FIX #5: Missing Automated Delinquency Engine
- * ═══════════════════════════════════════════════════════════════════════════
- *
- * ORIGINAL BUG:
- *   DelinquencyService had only manual CRUD endpoints. There was no
- *   scheduled automation to:
- *     - Scan RepaymentSchedule for past-due installments
- *     - Compute Days Past Due (DPD) per loan account
- *     - Classify accounts into PAR buckets
- *     - Auto-create DelinquencyCase records
- *   Delinquency cases had to be created manually via API calls, which
- *   is operationally impractical for a portfolio of hundreds of loans.
- *
- * FIX:
- *   A @Scheduled cron job runs every night at 00:30 AM. It:
- *   1. Queries RepaymentSchedule for overdue rows
- *      (dueDate < today, status IN {PENDING, PARTIAL}).
- *   2. Marks each row as OVERDUE.
- *   3. Calculates DPD = today - dueDate.
- *   4. Updates LoanAccount.dpd to the maximum DPD found.
- *   5. Marks account as NPA if DPD >= 90.
- *   6. Classifies into PAR bucket: PAR30, PAR60, PAR90, PAR180.
- *   7. Creates a new DelinquencyCase or updates the existing OPEN case.
- *   8. Writes an AuditLog entry per new case (actor: SYSTEM_SCHEDULER).
- *
- * Requires @EnableScheduling on MicroLendApplication — also added (Bug Fix #5).
- * ═══════════════════════════════════════════════════════════════════════════
- */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -187,3 +156,40 @@ public class DelinquencyScheduler {
         runNightlyDelinquencyCheck();
     }
 }
+
+
+
+
+
+/**
+ * DelinquencyScheduler — automated nightly delinquency detection.
+ *
+ * ═══════════════════════════════════════════════════════════════════════════
+ * BUG FIX #5: Missing Automated Delinquency Engine
+ * ═══════════════════════════════════════════════════════════════════════════
+ *
+ * ORIGINAL BUG:
+ *   DelinquencyService had only manual CRUD endpoints. There was no
+ *   scheduled automation to:
+ *     - Scan RepaymentSchedule for past-due installments
+ *     - Compute Days Past Due (DPD) per loan account
+ *     - Classify accounts into PAR buckets
+ *     - Auto-create DelinquencyCase records
+ *   Delinquency cases had to be created manually via API calls, which
+ *   is operationally impractical for a portfolio of hundreds of loans.
+ *
+ * FIX:
+ *   A @Scheduled cron job runs every night at 00:30 AM. It:
+ *   1. Queries RepaymentSchedule for overdue rows
+ *      (dueDate < today, status IN {PENDING, PARTIAL}).
+ *   2. Marks each row as OVERDUE.
+ *   3. Calculates DPD = today - dueDate.
+ *   4. Updates LoanAccount.dpd to the maximum DPD found.
+ *   5. Marks account as NPA if DPD >= 90.
+ *   6. Classifies into PAR bucket: PAR30, PAR60, PAR90, PAR180.
+ *   7. Creates a new DelinquencyCase or updates the existing OPEN case.
+ *   8. Writes an AuditLog entry per new case (actor: SYSTEM_SCHEDULER).
+ *
+ * Requires @EnableScheduling on MicroLendApplication — also added (Bug Fix #5).
+ * ═══════════════════════════════════════════════════════════════════════════
+ */

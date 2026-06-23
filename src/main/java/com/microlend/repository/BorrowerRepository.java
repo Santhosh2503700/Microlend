@@ -13,7 +13,7 @@ public interface BorrowerRepository extends JpaRepository<Borrower, Long> {
 
     Optional<Borrower> findByNationalIDNumber(String nationalIDNumber);
 
-    Optional<Borrower> findByEmail(String email); // ✅ ADDED
+    Optional<Borrower> findByEmail(String email);
 
     List<Borrower> findByStatus(BorrowerStatus status);
 

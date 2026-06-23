@@ -22,7 +22,5 @@ class MicroLendApplicationTests {
     @Test
     @DisplayName("Spring context should load without errors")
     void contextLoads() {
-        // If the Spring context fails to start (bad config, missing beans,
-        // circular dependencies), this test will fail with a clear error message.
     }
 }

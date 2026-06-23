@@ -7,12 +7,6 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-/**
- * LoanAccount
- *
- * BUG FIX #5: Added dpd (Days Past Due) field. The delinquency scheduler
- * updates this field nightly to reflect the most overdue installment.
- */
 @Entity
 @Table(name = "loan_accounts")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -31,7 +25,6 @@ public class LoanAccount {
     private BigDecimal totalRepayable;
     private BigDecimal outstandingPrincipal;
 
-    /** BUG FIX #5: Days Past Due — updated nightly by DelinquencyScheduler. */
     @Builder.Default
     private Integer dpd = 0;
 

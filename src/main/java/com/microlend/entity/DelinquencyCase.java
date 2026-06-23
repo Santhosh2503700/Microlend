@@ -8,12 +8,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 
-/**
- * DelinquencyCase
- *
- * BUG FIX #5: Added openedDate field (used by the auto-scheduler when
- * creating new cases) and ensured dpd is a proper Integer column.
- */
+
 @Entity
 @Table(name = "delinquency_cases")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
@@ -33,7 +28,6 @@ public class DelinquencyCase {
 
     private Long assignedCollectionsOfficerID;
 
-    /** BUG FIX #5: Stamped by the scheduler when auto-creating a case. */
     @Builder.Default
     private LocalDate openedDate = LocalDate.now();
 

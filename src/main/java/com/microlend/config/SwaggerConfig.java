@@ -23,7 +23,6 @@ public class SwaggerConfig {
 
         return new OpenAPI()
 
-                // ✅ API INFORMATION
                 .info(new Info()
                         .title("MicroLend API")
                         .version("1.0")
@@ -77,14 +76,12 @@ public class SwaggerConfig {
 </div>
 """)
                 )
-                // ✅ FIXED — servers belongs here (NOT inside Info)
                 .servers(List.of(
                         new Server()
                                 .url("http://localhost:8082")
                                 .description("Development Server")
                 ))
 
-                // ✅ SECURITY (JWT)
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
 
                 .components(new Components()

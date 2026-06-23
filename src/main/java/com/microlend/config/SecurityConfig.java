@@ -19,29 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- * SecurityConfig — MicroLend Phase 1 (Bug-Fixed)
- *
- * BUG FIX #1: /api/auth/register is NO LONGER in permitAll().
- *   Previously: .requestMatchers("/api/auth/**").permitAll() gave anonymous
- *               callers full access to register any role including ADMIN.
- *   Fixed:      Only /api/auth/login is public. /api/auth/register now
- *               requires ADMIN or BRANCH_MANAGER authentication.
- *               Anonymous → 401 Unauthorized. Wrong role → 403 Forbidden.
- *
- * BUG FIX #2: BRANCH_MANAGER can now access /api/auth/register.
- *   Previously: The blanket ADMIN-only rule on /api/admin/** blocked
- *               BRANCH_MANAGER from provisioning staff accounts.
- *   Fixed:      POST /api/auth/register allows ADMIN + BRANCH_MANAGER.
- *               Scope (branch + role) is enforced inside AuthService.
- *
- * BUG FIX #3: FIELD_OFFICER wildcard on /api/kyc/** is removed.
- *   Previously: .requestMatchers("/api/kyc/**").hasAnyRole("ADMIN","CREDIT_OFFICER","FIELD_OFFICER")
- *               gave FIELD_OFFICER access to PATCH /api/kyc/{id}/verify — same
- *               person who uploaded docs could self-verify (maker-checker violation).
- *   Fixed:      FIELD_OFFICER only reaches POST /api/kyc (document upload).
- *               PATCH /api/kyc/{id}/verify is restricted to ADMIN + CREDIT_OFFICER.
- */
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -58,7 +36,6 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
 
                 // ── PUBLIC: login only ──────────────────────────────────────
-                // BUG FIX #1: /api/auth/register is intentionally NOT here.
                 .requestMatchers("/api/auth/login").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
@@ -72,7 +49,6 @@ public class SecurityConfig {
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
 
                 // ── USER REGISTRATION ───────────────────────────────────────
-                // BUG FIX #1 + #2: Register requires auth; BRANCH_MANAGER allowed.
                 // Scope enforcement (branch + provisionable roles) is in AuthService.
                 .requestMatchers(HttpMethod.POST, "/api/auth/register")
                         .hasAnyRole("ADMIN", "BRANCH_MANAGER")
@@ -85,11 +61,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/borrowers/**")
                         .hasAnyRole("ADMIN", "CREDIT_OFFICER", "FIELD_OFFICER", "BRANCH_MANAGER")
 
-                // ── KYC — SPLIT RULES (BUG FIX #3) ─────────────────────────
                 // FIELD_OFFICER may ONLY upload docs (POST /api/kyc).
                 // PATCH /api/kyc/{id}/verify is ADMIN + CREDIT_OFFICER only.
-                // The old wildcard .requestMatchers("/api/kyc/**").hasAnyRole(...FIELD_OFFICER)
-                // is replaced with explicit, ordered rules.
                 .requestMatchers(HttpMethod.POST, "/api/kyc")
                         .hasAnyRole("ADMIN", "CREDIT_OFFICER", "FIELD_OFFICER")
                 .requestMatchers(HttpMethod.PATCH, "/api/kyc/{id}/verify")

@@ -19,7 +19,7 @@ public class PortfolioReport {
     @Enumerated(EnumType.STRING)
     private ReportScope scope;
 
-    private Long scopeRefID; // branchID / productID / fieldOfficerID depending on scope
+    private Long scopeRefID;
 
     private Integer activeLoanCount;
     private BigDecimal totalOutstanding;

@@ -14,10 +14,7 @@ public interface DelinquencyCaseRepository extends JpaRepository<DelinquencyCase
     List<DelinquencyCase> findByStatus(DelinquencyStatus status);
     List<DelinquencyCase> findByAssignedCollectionsOfficerID(Long officerID);
 
-    /**
-     * BUG FIX #5: Used by DelinquencyScheduler to check if an open case already
-     * exists for a given account before creating a duplicate.
-     */
+  
     Optional<DelinquencyCase> findByLoanAccountIDAndStatus(Long loanAccountID,
                                                              DelinquencyStatus status);
 }

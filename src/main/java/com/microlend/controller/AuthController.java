@@ -14,17 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-/**
- * AuthController
- *
- * BUG FIX #1: POST /api/auth/register is NO LONGER a public endpoint.
- * It now requires the caller to be authenticated as ADMIN or BRANCH_MANAGER.
- * Anonymous or low-privilege callers receive 401/403 instead of being
- * able to create arbitrary privileged accounts.
- *
- * BUG FIX #2: BRANCH_MANAGER is now an allowed registrar. Scope enforcement
- * (branch restriction + role restriction) is handled inside AuthService.
- */
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor

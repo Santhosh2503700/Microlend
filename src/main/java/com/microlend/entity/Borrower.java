@@ -23,7 +23,6 @@ public class Borrower {
     @Column(nullable = false)
     private String name;
 
-    // ✅ ADD THIS BACK (VERY IMPORTANT)
     @Column(unique = true)
     private String email;
 
@@ -44,7 +43,6 @@ public class Borrower {
     @Builder.Default
     private BorrowerStatus status = BorrowerStatus.ACTIVE;
 
-    // ✅ LINK TO USER (LOGIN TABLE)
     @OneToOne
     @JoinColumn(name = "user_id", unique = true)
     private User user;
