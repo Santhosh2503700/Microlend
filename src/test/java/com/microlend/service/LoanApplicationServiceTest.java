@@ -54,7 +54,6 @@ class LoanApplicationServiceTest {
                 .build();
     }
 
-    // ── CREATE ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("create() - should always start with DRAFT status")
@@ -80,7 +79,6 @@ class LoanApplicationServiceTest {
         loanApplicationService.create(validRequest);
     }
 
-    // ── SUBMIT ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("submit() - DRAFT should transition to SUBMITTED")
@@ -104,7 +102,6 @@ class LoanApplicationServiceTest {
                 .hasMessageContaining("DRAFT");
     }
 
-    // ── STATUS TRANSITIONS ────────────────────────────────────────────────────
 
     @Test
     @DisplayName("updateStatus() - SUBMITTED to UNDER_REVIEW is valid")
@@ -151,7 +148,6 @@ class LoanApplicationServiceTest {
     @Test
     @DisplayName("updateStatus() - invalid transition DRAFT to APPROVED should throw")
     void updateStatus_invalidTransition_throwsBadRequest() {
-        // DRAFT cannot jump directly to APPROVED
         draftApp.setStatus(ApplicationStatus.DRAFT);
         LoanApplicationStatusRequest req = new LoanApplicationStatusRequest();
         req.setStatus(ApplicationStatus.APPROVED);
@@ -174,7 +170,6 @@ class LoanApplicationServiceTest {
                 .isInstanceOf(BadRequestException.class);
     }
 
-    // ── QUERIES ───────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getAll() - should return all applications")

@@ -79,7 +79,7 @@ class SanctionLetterServiceTest {
     @Test
     @DisplayName("issue() - should throw BadRequestException for non-APPROVED application")
     void issue_notApprovedApp_throwsBadRequest() {
-        approvedApp.setStatus(ApplicationStatus.SUBMITTED); // Not APPROVED
+        approvedApp.setStatus(ApplicationStatus.SUBMITTED);
         when(applicationRepository.findById(1L)).thenReturn(Optional.of(approvedApp));
 
         assertThatThrownBy(() -> sanctionLetterService.issue(validRequest))

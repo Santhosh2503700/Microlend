@@ -46,7 +46,6 @@ class BorrowerKYCServiceTest {
                 .build();
     }
 
-    // ── CREATE (FIELD OFFICER ACTION) ─────────────────────────────────────────
 
     @Test
     @DisplayName("create() - should save KYC record with PENDING status")
@@ -88,13 +87,11 @@ class BorrowerKYCServiceTest {
         assertThat(result.getDocumentType()).isEqualTo(KYCDocumentType.UTILITY_BILL);
     }
 
-    // ── UPDATE STATUS (CREDIT OFFICER ACTION — BUG FIX #3 boundary) ──────────
 
     @Test
     @DisplayName("BUG FIX #3 — updateStatus() sets KYC to VERIFIED when called (Credit Officer path)")
     void updateStatus_verified_success() {
-        // This method should ONLY be callable by CREDIT_OFFICER/ADMIN
-        // The Security layer enforces that. This test verifies the service logic itself.
+        
         when(kycRepository.findById(1L)).thenReturn(Optional.of(pendingKyc));
         when(kycRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -125,7 +122,6 @@ class BorrowerKYCServiceTest {
                 .hasMessageContaining("99");
     }
 
-    // ── QUERIES ───────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getByBorrower() - should return all KYC records for a borrower")
@@ -160,4 +156,3 @@ class BorrowerKYCServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 }
- 

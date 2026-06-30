@@ -79,7 +79,6 @@ class CollectionServiceTest {
         partialPaymentRequest.setMode(CollectionMode.CENTRE_COLLECTION);
     }
 
-    // ── BUG FIX #4: FULL PAYMENT ──────────────────────────────────────────────
 
     @Test
     @DisplayName("BUG FIX #4 — Full payment: installment status becomes PAID")
@@ -130,13 +129,11 @@ class CollectionServiceTest {
         ));
     }
 
-    // ── BUG FIX #4: PARTIAL PAYMENT (the actual bug fix) ─────────────────────
 
     @Test
     @DisplayName("BUG FIX #4 — Partial payment: installment status MUST be PARTIAL, NOT PENDING")
     void recordCollection_partialPayment_installmentBecomesPartialNotPending() {
-        // This test directly verifies the bug fix.
-        // BEFORE the fix: status stayed PENDING. AFTER fix: status = PARTIAL.
+        
         when(loanAccountRepository.findById(1L)).thenReturn(Optional.of(activeAccount));
         when(scheduleRepository.findById(1L)).thenReturn(Optional.of(pendingSchedule));
         when(scheduleRepository.save(any())).thenAnswer(inv -> inv.getArgument(0));
@@ -146,11 +143,9 @@ class CollectionServiceTest {
         collectionService.recordCollection(partialPaymentRequest);
 
         verify(scheduleRepository).save(argThat(s -> {
-            // MUST be PARTIAL — this is the exact bug that was fixed
             assertThat(s.getStatus())
                 .as("Installment status MUST be PARTIAL after partial payment, NOT PENDING")
                 .isEqualTo(InstallmentStatus.PARTIAL);
-            // amountPaid must reflect the partial amount
             assertThat(s.getAmountPaid())
                 .as("amountPaid must be updated to 1000.00")
                 .isEqualByComparingTo("1000.00");
@@ -175,7 +170,6 @@ class CollectionServiceTest {
     @Test
     @DisplayName("BUG FIX #4 — Partial payments accumulate: second partial adds to amountPaid")
     void recordCollection_secondPartialPayment_accumulatesAmountPaid() {
-        // First partial already paid 1000, now paying 500 more
         pendingSchedule.setAmountPaid(new BigDecimal("1000.00"));
         pendingSchedule.setStatus(InstallmentStatus.PARTIAL);
 
@@ -189,7 +183,6 @@ class CollectionServiceTest {
 
         collectionService.recordCollection(partialPaymentRequest);
 
-        // amountPaid should now be 1000 + 500 = 1500
         verify(scheduleRepository).save(argThat(s ->
                 s.getAmountPaid().compareTo(new BigDecimal("1500.00")) == 0
                 && s.getStatus() == InstallmentStatus.PARTIAL
@@ -199,7 +192,6 @@ class CollectionServiceTest {
     @Test
     @DisplayName("BUG FIX #4 — Final partial completes installment: status becomes PAID")
     void recordCollection_finalPartialCompletes_becomePaid() {
-        // Already paid 1000, now paying the remaining 1219.92
         pendingSchedule.setAmountPaid(new BigDecimal("1000.00"));
         pendingSchedule.setStatus(InstallmentStatus.PARTIAL);
 
@@ -219,7 +211,6 @@ class CollectionServiceTest {
         ));
     }
 
-    // ── EXCESS PAYMENT ────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("Excess payment: collection status is EXCESS")
@@ -236,7 +227,6 @@ class CollectionServiceTest {
         assertThat(result.getStatus()).isEqualTo(CollectionStatus.EXCESS);
     }
 
-    // ── VALIDATIONS ───────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("Zero amount throws BadRequestException")
@@ -319,7 +309,6 @@ class CollectionServiceTest {
         ));
     }
 
-    // ── QUERIES ───────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getAll() - returns all collection records")

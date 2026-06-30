@@ -66,7 +66,6 @@ class BorrowerServiceTest {
                 .build();
     }
 
-    // ── CREATE ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("create() - should save and return borrower with ACTIVE status")
@@ -125,7 +124,6 @@ class BorrowerServiceTest {
         verify(borrowerRepository, never()).findByNationalIDNumber(any());
     }
 
-    // ── GET ALL ───────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getAll() - should return list of all borrowers")
@@ -150,7 +148,6 @@ class BorrowerServiceTest {
         assertThat(result).isEmpty();
     }
 
-    // ── GET BY ID ─────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getById() - should return borrower when ID exists")
@@ -173,7 +170,6 @@ class BorrowerServiceTest {
                 .hasMessageContaining("99");
     }
 
-    // ── UPDATE ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("update() - should update and return modified borrower")
@@ -198,7 +194,6 @@ class BorrowerServiceTest {
                 .isInstanceOf(ResourceNotFoundException.class);
     }
 
-    // ── DELETE ────────────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("delete() - should call deleteById when borrower exists")
@@ -221,7 +216,6 @@ class BorrowerServiceTest {
         verify(borrowerRepository, never()).deleteById(any());
     }
 
-    // ── GET BY STATUS ─────────────────────────────────────────────────────────
 
     @Test
     @DisplayName("getByStatus() - should return borrowers filtered by status")
@@ -235,4 +229,3 @@ class BorrowerServiceTest {
         assertThat(result.get(0).getStatus()).isEqualTo(BorrowerStatus.ACTIVE);
     }
 }
- 

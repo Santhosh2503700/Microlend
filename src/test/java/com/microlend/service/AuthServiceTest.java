@@ -29,7 +29,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("AuthService Tests — Fixed Version ✅")
+@DisplayName("AuthService Tests — Fixed Version")
 class AuthServiceTest {
 
     @Mock private UserRepository userRepository;
@@ -38,7 +38,7 @@ class AuthServiceTest {
     @Mock private AuthenticationManager authenticationManager;
 
     @InjectMocks
-    private AuthServiceImpl authService; // ✅ FIXED (implementation class)
+    private AuthServiceImpl authService;
 
     private RegisterUserRequest fieldOfficerRequest;
     private User adminUser;
@@ -63,7 +63,6 @@ class AuthServiceTest {
                 .role(UserRole.BRANCH_MANAGER).branchID(1L).build();
     }
 
-    // ✅ FIXED — lenient stubbing to avoid UnnecessaryStubbingException
     private void setSecurityContextAs(UserRole role, String email) {
         Authentication auth = mock(Authentication.class);
 
@@ -78,7 +77,6 @@ class AuthServiceTest {
         SecurityContextHolder.setContext(ctx);
     }
 
-    // ✅ Duplicate Email Check
     @Test
     void register_duplicateEmail_throwsBadRequest() {
         setSecurityContextAs(UserRole.ADMIN, "admin@microlend.com");
@@ -90,7 +88,6 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any());
     }
 
-    // ✅ Admin Register
     @Test
     void register_adminCanRegister_success() {
         setSecurityContextAs(UserRole.ADMIN, "admin@microlend.com");
@@ -112,7 +109,6 @@ class AuthServiceTest {
         assertThat(result.getToken()).isEqualTo("mock.jwt.token");
     }
 
-    // ✅ Branch Manager success
     @Test
     void register_branchManager_success() {
         setSecurityContextAs(UserRole.BRANCH_MANAGER, "anita@microlend.com");
@@ -129,7 +125,6 @@ class AuthServiceTest {
         assertThat(result).isNotNull();
     }
 
-    // ✅ Role Escalation Block
     @Test
     void register_branchManagerCannotCreateAdmin() {
 
@@ -137,7 +132,6 @@ class AuthServiceTest {
 
         setSecurityContextAs(UserRole.BRANCH_MANAGER, "anita@microlend.com");
 
-        // ✅ ONLY REQUIRED mock
         lenient().when(userRepository.findByEmail("anita@microlend.com"))
                 .thenReturn(Optional.of(branchManagerUser));
 
@@ -147,7 +141,6 @@ class AuthServiceTest {
         verify(userRepository, never()).save(any());
     }
 
-    // ✅ Branch validation (FIXED assertion ✅)
     @Test
     void register_crossBranch_throwsException() {
         fieldOfficerRequest.setBranchID(99L);
@@ -160,11 +153,9 @@ class AuthServiceTest {
 
         assertThatThrownBy(() -> authService.register(fieldOfficerRequest))
                 .isInstanceOf(SecurityException.class)
-                // ✅ FIXED
                 .hasMessageContaining("another branch");
     }
 
-    // ✅ LOGIN SUCCESS
     @Test
     void login_success() {
         LoginRequest req = new LoginRequest();
@@ -183,7 +174,6 @@ class AuthServiceTest {
         assertThat(response.getToken()).isEqualTo("token");
     }
 
-    // ✅ LOGIN FAIL
     @Test
     void login_userNotFound() {
         LoginRequest req = new LoginRequest();
